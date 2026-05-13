@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Travel & Hospitality Live Demo Monitor</title>
+    <style>
+      :root {
+        --bg: #0b0f14;
+        --panel: rgba(255, 255, 255, 0.06);
+        --panel-2: rgba(255, 255, 255, 0.04);
+        --text: rgba(255, 255, 255, 0.92);
+        --muted: rgba(255, 255, 255, 0.65);
+        --border: rgba(255, 255, 255, 0.10);
+        --gold: #c9a86a;
+        --good: #48d07d;
+        --bad: #ff5c5c;
+      }
+      * { box-sizing: border-box; }
+      html, body { height: 100%; }
+      body {
+        margin: 0;
+        background: radial-gradient(1200px 600px at 10% 0%, rgba(201, 168, 106, 0.14), transparent 60%),
+                    radial-gradient(900px 500px at 90% 20%, rgba(72, 208, 125, 0.10), transparent 55%),
+                    var(--bg);
+        color: var(--text);
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+        padding: 18px;
+      }
+      .wrap { max-width: 1200px; margin: 0 auto; }
+      header {
+        display: flex; align-items: center; justify-content: space-between; gap: 16px;
+        padding: 16px 18px; border: 1px solid var(--border); border-radius: 16px;
+        background: linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.03));
+        backdrop-filter: blur(10px);
+      }
+      .brand { display: flex; align-items: center; gap: 12px; }
+      .logo {
+        width: 40px; height: 40px; border-radius: 12px; border: 1px solid var(--border);
+        background: linear-gradient(135deg, rgba(201,168,106,0.35), rgba(255,255,255,0.04));
+        display: grid; place-items: center; font-weight: 800; letter-spacing: 0.06em;
+      }
+      h1 { margin: 0; font-size: 18px; letter-spacing: 0.18em; text-transform: uppercase; }
+      .sub { margin: 6px 0 0; color: var(--muted); font-size: 12px; }
+      .right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
+      .pill {
+        display: inline-flex; align-items: center; gap: 10px;
+        padding: 10px 12px; border: 1px solid var(--border); border-radius: 999px;
+        background: rgba(255,255,255,0.04); color: var(--muted); font-size: 12px; white-space: nowrap;
+      }
+      .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--bad); box-shadow: 0 0 0 4px rgba(255, 92, 92, 0.12); }
+      .dot.ok { background: var(--good); box-shadow: 0 0 0 4px rgba(72, 208, 125, 0.12); }
+      main { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 16px; margin-top: 16px; }
+      .card { border: 1px solid var(--border); border-radius: 16px; background: rgba(255,255,255,0.04); backdrop-filter: blur(10px); overflow: hidden; }
+      .card h2 {
+        margin: 0; padding: 14px 16px; font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase;
+        color: rgba(255,255,255,0.85); border-bottom: 1px solid rgba(255,255,255,0.06);
+        display: flex; align-items: center; justify-content: space-between; gap: 10px;
+      }
+      .btn { appearance: none; border: 1px solid var(--border); background: rgba(255,255,255,0.04); color: var(--text); padding: 8px 12px; border-radius: 999px; font-size: 12px; cursor: pointer; }
+      .btn:hover { border-color: rgba(255,255,255,0.22); }
+      .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 14px 16px 0; }
+      .stat { border: 1px solid rgba(255,255,255,0.06); background: rgba(255,255,255,0.03); border-radius: 14px; padding: 12px; }
+      .stat .label { color: var(--muted); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; }
+      .stat .value { margin-top: 8px; font-size: 28px; font-weight: 800; color: var(--gold); }
+      .stat .small { margin-top: 6px; color: var(--muted); font-size: 12px; }
+      .events { padding: 14px 16px 16px; }
+      .event { border: 1px solid rgba(255,255,255,0.06); background: rgba(255,255,255,0.03); border-radius: 14px; padding: 12px; margin-top: 12px; }
+      .event:first-child { margin-top: 0; }
+      .event .top { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
+      .event .type { font-weight: 800; font-size: 18px; }
+      .event .time { color: var(--muted); font-size: 12px; white-space: nowrap; }
+      .event .meta { margin-top: 6px; color: var(--muted); font-size: 13px; }
+      .event pre {
+        margin: 10px 0 0; padding: 10px; border-radius: 12px;
+        border: 1px solid rgba(255,255,255,0.06); background: rgba(0,0,0,0.35); color: rgba(255,255,255,0.88);
+        overflow: auto; max-height: 220px;
+      }
+      .users { padding: 14px 16px 16px; }
+      .user { border: 1px solid rgba(255,255,255,0.06); background: rgba(255,255,255,0.03); border-radius: 14px; padding: 12px; margin-top: 12px; }
+      .user:first-child { margin-top: 0; }
+      .user .name { font-weight: 800; font-size: 20px; }
+      .user .seen { margin-top: 6px; color: var(--muted); font-size: 12px; }
+      .bar { margin-top: 10px; height: 10px; border-radius: 999px; background: rgba(255,255,255,0.08); overflow: hidden; }
+      .bar > div { height: 100%; width: 0%; background: linear-gradient(90deg, rgba(201,168,106,0.9), rgba(201,168,106,0.35)); transition: width 220ms ease; }
+      footer { margin-top: 14px; color: var(--muted); font-size: 12px; padding: 0 2px; }
+      @media (max-width: 980px) { main { grid-template-columns: 1fr; } .stats { grid-template-columns: 1fr; } }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <div class="brand">
+          <div class="logo">T</div>
+          <div>
+            <h1>Travel &amp; Hospitality Live Demo Monitor</h1>
+            <p class="sub">Real-time web events via WebSocket relay (hosted)</p>
+          </div>
+        </div>
+        <div class="right">
+          <div class="pill" title="WebSocket connection status">
+            <span id="dot" class="dot"></span>
+            <span id="statusText">Disconnected</span>
+          </div>
+          <div class="pill" title="Relay WebSocket endpoint">
+            Relay:
+            <code id="relayText">wss://travel-hospitality-relay.onrender.com/ws</code>
+          </div>
+        </div>
+      </header>
+
+      <main>
+        <section class="card">
+          <h2>
+            <span>Now Happening</span>
+            <button class="btn" id="clearBtn" type="button">Clear</button>
+          </h2>
+          <div class="stats">
+            <div class="stat">
+              <div class="label">Events (session)</div>
+              <div class="value" id="eventsCount">0</div>
+              <div class="small" id="topEvent">Top event: —</div>
+            </div>
+            <div class="stat">
+              <div class="label">Active users (60s)</div>
+              <div class="value" id="activeUsers">0</div>
+              <div class="small">Last minute activity</div>
+            </div>
+            <div class="stat">
+              <div class="label">Mode</div>
+              <div class="value" style="font-size: 18px; margin-top: 10px;">LIVE</div>
+              <div class="small">Listening to relay stream</div>
+            </div>
+          </div>
+          <div class="events" id="events"></div>
+        </section>
+        <aside class="card">
+          <h2>
+            <span>Active Users</span>
+            <button class="btn" id="resetUsersBtn" type="button">Reset users</button>
+          </h2>
+          <div class="users" id="users"></div>
+        </aside>
+      </main>
+      <footer>
+        Tip: If this monitor connects but Salesforce doesn’t, Salesforce requires a Trusted URL for the relay domain and uses secure WebSockets (wss).
+      </footer>
+    </div>
+
+    <script>
+      const RELAY_WS_URL = "wss://travel-hospitality-relay.onrender.com/ws";
+      const SHOW_RAW_JSON = true;
+
+      const dot = document.getElementById("dot");
+      const statusText = document.getElementById("statusText");
+      const relayText = document.getElementById("relayText");
+      const eventsEl = document.getElementById("events");
+      const usersEl = document.getElementById("users");
+      const eventsCountEl = document.getElementById("eventsCount");
+      const activeUsersEl = document.getElementById("activeUsers");
+      const topEventEl = document.getElementById("topEvent");
+      const clearBtn = document.getElementById("clearBtn");
+      const resetUsersBtn = document.getElementById("resetUsersBtn");
+
+      relayText.textContent = RELAY_WS_URL;
+
+      let events = [];
+      const users = new Map();
+      const eventTypeCounts = new Map();
+
+      function nowTime() { return new Date().toLocaleTimeString([], { hour12: false }); }
+      function safeParse(json) { try { return JSON.parse(json); } catch { return null; } }
+      function getUserKey(payload) {
+        return (
+          payload?.userId || payload?.contactId || payload?.individualId ||
+          payload?.deviceId || payload?.anonymousId || payload?.sessionId ||
+          "anon:" + (payload?.tabId || "||")
+        );
+      }
+      function getEventType(payload) { return payload?.type || payload?.eventType || payload?.name || "Event"; }
+      function getDetails(payload) {
+        const details = {};
+        const allow = ["field", "value", "demoKey", "step", "tier", "numericValue", "fullName", "email", "locationImageUrl", "typeImageUrl", "photoUrl"];
+        for (const k of allow) { if (payload?.[k] != null) details[k] = payload[k]; }
+        return details;
+      }
+      function updateStats() {
+        eventsCountEl.textContent = String(events.length);
+        const cutoff = Date.now() - 60_000;
+        let active = 0;
+        for (const [, u] of users) if (u.lastSeen >= cutoff) active++;
+        activeUsersEl.textContent = String(active);
+        let top = null, topCount = 0;
+        for (const [k, v] of eventTypeCounts) if (v > topCount) { top = k; topCount = v; }
+        topEventEl.textContent = top ? `Top event: ${top}` : "Top event: —";
+      }
+      function renderUsers() {
+        const cutoff = Date.now() - 60_000;
+        const list = Array.from(users.entries()).sort((a, b) => b[1].lastSeen - a[1].lastSeen).slice(0, 8);
+        usersEl.innerHTML = "";
+        for (const [key, u] of list) {
+          const secsAgo = Math.max(0, Math.round((Date.now() - u.lastSeen) / 1000));
+          const active = u.lastSeen >= cutoff;
+          const wrap = document.createElement("div"); wrap.className = "user";
+          const name = document.createElement("div"); name.className = "name"; name.textContent = key;
+          const seen = document.createElement("div"); seen.className = "seen";
+          seen.textContent = active ? `last seen ${secsAgo}s ago` : `inactive (${secsAgo}s ago)`;
+          const bar = document.createElement("div"); bar.className = "bar";
+          const fill = document.createElement("div");
+          const pct = Math.max(0, Math.min(100, Math.round((1 - Math.min(60, secsAgo) / 60) * 100)));
+          fill.style.width = pct + "%"; bar.appendChild(fill);
+          wrap.appendChild(name); wrap.appendChild(seen); wrap.appendChild(bar);
+          usersEl.appendChild(wrap);
+        }
+      }
+      function renderEvents() {
+        eventsEl.innerHTML = "";
+        for (const e of events.slice(0, 12)) {
+          const card = document.createElement("div"); card.className = "event";
+          const top = document.createElement("div"); top.className = "top";
+          const type = document.createElement("div"); type.className = "type"; type.textContent = e.type;
+          const time = document.createElement("div"); time.className = "time"; time.textContent = e.time;
+          top.appendChild(type); top.appendChild(time);
+          const meta = document.createElement("div"); meta.className = "meta"; meta.textContent = `User: ${e.userKey}`;
+          card.appendChild(top); card.appendChild(meta);
+          const details = document.createElement("div"); details.className = "meta";
+          details.textContent = `Details: ${Object.keys(e.details).length ? JSON.stringify(e.details) : "{}"}`;
+          card.appendChild(details);
+          if (SHOW_RAW_JSON) {
+            const pre = document.createElement("pre"); pre.textContent = JSON.stringify(e.payload, null, 2);
+            card.appendChild(pre);
+          }
+          eventsEl.appendChild(card);
+        }
+      }
+      function setConnected(isConnected) {
+        if (isConnected) { dot.classList.add("ok"); statusText.textContent = "Connected"; }
+        else { dot.classList.remove("ok"); statusText.textContent = "Disconnected"; }
+      }
+
+      let ws;
+      function connect() {
+        setConnected(false);
+        ws = new WebSocket(RELAY_WS_URL);
+        ws.onopen = () => setConnected(true);
+        ws.onmessage = (evt) => {
+          const raw = evt.data;
+          const payload = safeParse(raw) ?? { raw };
+          const type = getEventType(payload);
+          const userKey = getUserKey(payload);
+          const details = getDetails(payload);
+          eventTypeCounts.set(type, (eventTypeCounts.get(type) || 0) + 1);
+          const curr = users.get(userKey) || { lastSeen: 0, count: 0 };
+          curr.lastSeen = Date.now(); curr.count += 1;
+          users.set(userKey, curr);
+          events.unshift({ type, userKey, details, payload, time: nowTime() });
+          if (events.length > 200) events.length = 200;
+          updateStats(); renderUsers(); renderEvents();
+        };
+        ws.onerror = () => setConnected(false);
+        ws.onclose = () => { setConnected(false); setTimeout(connect, 1500); };
+      }
+
+      clearBtn.addEventListener("click", () => { events = []; eventTypeCounts.clear(); updateStats(); renderEvents(); });
+      resetUsersBtn.addEventListener("click", () => { users.clear(); updateStats(); renderUsers(); });
+
+      updateStats(); renderUsers(); renderEvents();
+      connect();
+    </script>
+  </body>
+</html>
