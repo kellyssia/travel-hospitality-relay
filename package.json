@@ -1,0 +1,15 @@
+{
+  "name": "travel-hospitality-relay",
+  "version": "1.0.0",
+  "description": "WebSocket broadcast relay for the travel-hospitality audience events",
+  "main": "relay.js",
+  "scripts": {
+    "start": "node relay.js"
+  },
+  "dependencies": {
+    "ws": "^8.16.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
